@@ -424,15 +424,18 @@ check_file_permissions() {
 
     # Check individual credential files
     local insecure_files=0
-    for f in "$creds_dir"/*.json 2>/dev/null; do
+    local f f_perms
+    shopt -s nullglob
+    for f in "$creds_dir"/*.json; do
       if [[ -f "$f" ]]; then
-        local f_perms=$(stat -c %a "$f" 2>/dev/null || stat -f %Lp "$f" 2>/dev/null)
+        f_perms=$(stat -c %a "$f" 2>/dev/null || stat -f %Lp "$f" 2>/dev/null)
         if [[ "$f_perms" != "600" ]]; then
           ((insecure_files++))
           info "$(basename "$f"): $f_perms (should be 600)"
         fi
       fi
     done
+    shopt -u nullglob
 
     if [[ $insecure_files -eq 0 ]]; then
       pass "cred_files" "All credential files have correct permissions"

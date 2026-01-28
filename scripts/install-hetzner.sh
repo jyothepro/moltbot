@@ -327,22 +327,21 @@ create_user() {
 # Install as User
 # ============================================================================
 install_as_user() {
-  local install_script
-  local install_args=""
+  local install_script install_args script_path
 
   if [[ "$MODE" == "paranoid" ]]; then
     install_script="hetzner-install-paranoid.sh"
-    install_args="--domain $DOMAIN"
+    install_args="--domain \"$DOMAIN\""
   else
     install_script="hetzner-install.sh"
     install_args="--with-docker"
     if [[ -n "$DOMAIN" ]]; then
-      install_args="$install_args --with-caddy --domain $DOMAIN"
+      install_args="$install_args --with-caddy --domain \"$DOMAIN\""
     fi
   fi
 
   log "Downloading installation script..."
-  local script_path="/tmp/$install_script"
+  script_path="/tmp/$install_script"
   curl -fsSL "$REPO_URL/scripts/$install_script" -o "$script_path"
   chmod +x "$script_path"
 
@@ -352,6 +351,7 @@ install_as_user() {
     sudo -u "$USERNAME" -i bash -c "cd ~ && $script_path $install_args"
   else
     # Already running as non-root user
+    # shellcheck disable=SC2086
     bash "$script_path" $install_args
   fi
 }
