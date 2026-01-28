@@ -11,27 +11,61 @@ read_when:
 
 Run a persistent, secure Moltbot Gateway on Hetzner for ~$4-5/month.
 
-## Choose Your Installation Method
+---
 
-| Method | Best For | Security Level | Setup Time |
-|--------|----------|----------------|------------|
-| [Automated Scripts](#automated-installation) | Most users | High to Maximum | ~10 min |
-| [Docker Compose](#docker-installation-advanced) | DevOps/Custom builds | Configurable | ~20 min |
+## One-Command Installation
 
-## Choose Your Security Level
+SSH into your fresh Hetzner VPS as root and run:
 
-| Level | Script | Open Ports | Best For |
-|-------|--------|------------|----------|
-| **Standard** | `hetzner-install.sh` | SSH + HTTPS | General use |
-| **Paranoid** | `hetzner-install-paranoid.sh` | SSH only | Sensitive data |
+```bash
+curl -fsSL https://get.molt.bot/hetzner | bash
+```
 
-**Recommendation:** Use Paranoid mode if handling sensitive data, API keys, or private conversations.
+This interactive installer will:
+1. Create a secure non-root user
+2. Install Node.js, Docker, and Moltbot
+3. Configure maximum security settings
+4. Set up firewall and services
+5. Guide you through domain and API key setup
+
+### Non-Interactive Installation
+
+For automation, pass all options via flags:
+
+```bash
+# Paranoid mode (Cloudflare Tunnel, recommended for sensitive data)
+curl -fsSL https://get.molt.bot/hetzner | bash -s -- \
+  --domain ai.example.com \
+  --paranoid \
+  --api-key sk-ant-api03-YOUR_KEY \
+  --yes
+
+# Standard mode (Caddy reverse proxy)
+curl -fsSL https://get.molt.bot/hetzner | bash -s -- \
+  --domain ai.example.com \
+  --standard \
+  --api-key sk-ant-api03-YOUR_KEY \
+  --yes
+```
+
+### Security Levels
+
+| Level | Open Ports | Best For |
+|-------|------------|----------|
+| **Standard** | SSH + HTTPS | General use |
+| **Paranoid** | SSH only | Sensitive data, maximum security |
+
+**After installation**, add your user ID to the allowlist:
+
+```bash
+moltbot config set channels.telegram.allowFrom '["YOUR_TELEGRAM_ID"]'
+```
 
 ---
 
-# Automated Installation
+## Manual Installation
 
-The fastest way to get a secure Moltbot deployment.
+If you prefer step-by-step control, follow the sections below.
 
 ## Prerequisites
 
