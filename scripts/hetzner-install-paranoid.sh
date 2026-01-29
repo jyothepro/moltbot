@@ -200,6 +200,12 @@ cat > "$MOLTBOT_DIR/moltbot.json" << 'CONFIGEOF'
     }
   },
 
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    }
+  },
+
   "agents": {
     "defaults": {
       "sandbox": {

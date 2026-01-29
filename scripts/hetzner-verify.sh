@@ -174,6 +174,26 @@ check_gateway_exposure() {
       fail "gateway_auth" "No authentication configured for non-loopback binding"
     fi
   fi
+
+  # Check Control UI security
+  local dangerous_device_auth=$(read_config "gateway.controlUi.dangerouslyDisableDeviceAuth")
+  if [[ "$dangerous_device_auth" == "true" ]]; then
+    fail "device_auth" "dangerouslyDisableDeviceAuth is TRUE (security risk!)"
+  else
+    pass "device_auth" "Device authentication enabled"
+  fi
+
+  # Check mDNS/Bonjour discovery
+  local mdns_mode=$(read_config "discovery.mdns.mode")
+  if [[ "$mdns_mode" == "off" ]]; then
+    pass "mdns" "mDNS discovery: off (most secure)"
+  elif [[ "$mdns_mode" == "minimal" ]]; then
+    pass "mdns" "mDNS discovery: minimal (recommended)"
+  elif [[ "$mdns_mode" == "full" ]]; then
+    warn "mdns" "mDNS discovery: full (exposes cliPath, sshPort)"
+  else
+    info "mDNS discovery: default (consider setting to minimal or off)"
+  fi
 }
 
 # ============================================================================

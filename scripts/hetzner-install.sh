@@ -216,7 +216,14 @@ cat > "$MOLTBOT_DIR/moltbot.json" << 'CONFIGEOF'
     },
     "controlUi": {
       "enabled": true,
-      "allowInsecureAuth": false
+      "allowInsecureAuth": false,
+      "dangerouslyDisableDeviceAuth": false
+    }
+  },
+
+  "discovery": {
+    "mdns": {
+      "mode": "minimal"
     }
   },
 
